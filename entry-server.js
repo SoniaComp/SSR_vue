@@ -2,6 +2,22 @@
 import { createApp } from './app'
 
 export default context => {
-  const { app } = createApp()
-  return app
+  // 비동기 처리가 있을수 있으니 Promise로 처리한다.
+  return new Promise((resolve, reject) => {
+    const { app, router } = createApp()
+
+    // 서버 사이드 router's location
+    router.push(context.url)
+
+    // wait until router has resolved possible 비동기 컴포넌트, 훅
+    router.onReady(() => {
+      const matchedComponents = router.getMatchedComponents()
+      // no matchhed routes, reject with 404
+      if (!matchedComponents.length) {
+        return reject({ code: 404 })
+      }
+
+      resolve(app)
+    }, reject)
+  })
 }
