@@ -2,12 +2,11 @@
 // 여러 요청에서 공유 인스턴스를 사용하면, 요청 간 상태 오염이 쉽게 발생합니다.
 
 const Vue = require('vue')
+import App from './App.vue'
 
 export function createApp(context) {
-  return new Vue({
-    data: {
-      url: context.url
-    },
-    template: `<div>The visited URL is {{url}}</div>`
+  const app = new Vue({
+    render: h => h(App)
   })
+  return { app }
 }
